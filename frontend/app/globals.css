@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+      --background-dark: #1E2530;
+      --background-card: #262B35;
+      --accent-yellow: #FFC107;
+      --text-white: #FFFFFF;
+      --text-gray: #9CA3AF;
+    }
+    
+    body {
+      background-color: var(--background-dark);
+      color: var(--text-white);
+    }
