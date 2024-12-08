@@ -81,7 +81,7 @@ contract TimeCapsule is ReentrancyGuard {
         uint256 counter = 0;
 
         for (uint256 i = 0; i < capsuleCount; i++) {
-            if (capsules[i].owner != _owner) {
+            if (capsules[i].owner == _owner) {
                 result[counter] = i;
                 counter++;
             }
