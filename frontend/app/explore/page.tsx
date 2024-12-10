@@ -12,12 +12,7 @@ interface TimeCapsule {
   creator: string;
 }
 
-interface ExplorePageProps {
-  isLoading?: boolean;
-  error?: string;
-}
-
-export default function ExplorePage({ isLoading, error }: ExplorePageProps) {
+export default function ExplorePage() {
   const [capsules, setCapsules] = useState<TimeCapsule[]>([
     {
       id: '1',
@@ -84,28 +79,6 @@ export default function ExplorePage({ isLoading, error }: ExplorePageProps) {
 
     return filtered;
   }, [capsules, searchTerm, dateFilter, sortOrder]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div role="status" className="animate-spin rounded-full h-32 w-32 border-b-2 border-white" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <p className="text-red-500">{error}</p>
-        <button
-          className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors"
-          onClick={() => window.location.reload()}
-        >
-          Retry
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-b from-background via-background/90 to-background/80">

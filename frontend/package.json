@@ -12,9 +12,9 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@alchemy/aa-accounts": "^3.19.0",
-    "@alchemy/aa-alchemy": "^3.19.0",
-    "@alchemy/aa-core": "^3.19.0",
+    "@alchemy/aa-accounts": "^1.2.4",
+    "@alchemy/aa-alchemy": "^1.2.4",
+    "@alchemy/aa-core": "^1.2.4",
     "@pushprotocol/restapi": "^1.7.29",
     "@pushprotocol/socket": "^0.5.3",
     "@tanstack/react-query": "^5.62.3",
