@@ -1,6 +1,9 @@
 # TimeCapsule
 
-Preserve your memories. Connect with the future.
+Capture the magic of your memories. 
+Create digital time capsules that will stand the test of time, preserving your memories forever.
+![Capture d’écran 2024-12-10 à 21 40 14](https://github.com/user-attachments/assets/7a557371-fe34-4e54-a5dc-de8f22c4e7da)
+
 
 ## Table of Contents
 
