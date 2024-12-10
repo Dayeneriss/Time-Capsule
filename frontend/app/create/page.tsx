@@ -2,13 +2,14 @@
 
 import { useState, useCallback, useEffect } from 'react';  
 import { useAccount } from 'wagmi';  
-import { ConnectKitButton } from 'connectkit';  
+import ConnectButton from '../components/ConnectButton';  
 import Image from 'next/image';  
 import { useRouter } from 'next/navigation';  
 import { parseEther } from 'viem';  
 import { useWriteContract, useWatchContractEvent } from 'wagmi';  
 import { timeCapsuleABI } from '@/contracts/TimeCapsuleABI';  
 import FileUploadInfo from '../components/FileUploadInfo';
+import FloatingParticles from '../components/FloatingParticles';
 
 // Modifiez l'interface du formData  
 interface FormData {  
@@ -75,18 +76,17 @@ export default function CreatePage() {
     }
   };
 
-  const handleFileChange = useCallback((e: 
-    React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
 
     // Validate file size  
-        const maxSize = 10 * 1024 * 1024; // 10MB  
-        const invalidFiles = selectedFiles.filter(file => file.size > maxSize);  
+    const maxSize = 10 * 1024 * 1024; // 10MB  
+    const invalidFiles = selectedFiles.filter(file => file.size > maxSize);  
     
-        if (invalidFiles.length > 0) {  
-          setError('Some files exceed the 10MB size limit');  
-          return;  
-        }  
+    if (invalidFiles.length > 0) {  
+      setError('Some files exceed the 10MB size limit');  
+      return;  
+    }
 
     setFormData(prev => ({ ...prev, files: selectedFiles }));
 
@@ -100,6 +100,31 @@ export default function CreatePage() {
       prev.forEach(url=> URL.revokeObjectURL(url));
       return newPreviews ;
     });
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const files = Array.from(e.dataTransfer.files);
+    const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+    
+    // Create a new DataTransfer object
+    const dataTransfer = new DataTransfer();
+    files.forEach(file => dataTransfer.items.add(file));
+    
+    // Set the files to the input
+    if (fileInput) {
+      fileInput.files = dataTransfer.files;
+      // Trigger the onChange event
+      const event = new Event('change', { bubbles: true });
+      fileInput.dispatchEvent(event);
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {  
@@ -182,127 +207,177 @@ export default function CreatePage() {
     previews.forEach(preview => URL.revokeObjectURL(preview));
   }, [previews]);
 
+  // Fonction utilitaire pour formater la taille des fichiers
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+  };
+
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-[#1E2530] flex flex-col items-center justify-center p-4">
-        <div className="bg-[#262B35] p-8 rounded-lg text-center max-w-md w-full">
-          <h2 className="text-2xl font-bold text-white mb-4">Connect Your Wallet</h2>
-          <p className="text-gray-400 mb-6">
-            Please connect your wallet to continue
-          </p>
-          <ConnectKitButton />
+      <div className="min-h-screen bg-background relative overflow-hidden">
+        {/* Background gradients */}
+        <div className="fixed inset-0 bg-nebula opacity-80" />
+        <div className="fixed inset-0 bg-stardust opacity-60" />
+        <div className="fixed inset-0 bg-aurora opacity-40" />
+        
+        <FloatingParticles />
+
+        {/* Main content */}
+        <div className="relative z-10 max-w-4xl mx-auto p-8">
+          <h1 className="text-5xl font-bold mb-8 text-center animate-float bg-gradient-to-r from-secondary via-primary to-accent bg-clip-text text-transparent">
+            Connect Your Wallet
+          </h1>
+          
+          <div className="bg-card/20 backdrop-blur-lg rounded-2xl p-8 shadow-cosmic border border-primary/20">
+            <ConnectButton />
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#1E2530] p-4">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8">Create Time Capsule</h1>
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Background gradients */}
+      <div className="fixed inset-0 bg-nebula opacity-80" />
+      <div className="fixed inset-0 bg-stardust opacity-60" />
+      <div className="fixed inset-0 bg-aurora opacity-40" />
+      
+      <FloatingParticles />
 
-        {error && (
-          <div className="bg-red-500 text-white p-4 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
-
-        {writeError && (
-          <div className="bg-red-500 text-white p-4 rounded-lg mb-6">
-            Transaction failed. Please try again.
-          </div>
-        )}
-
-        {isSuccess && (
-          <div className="bg-green-500 text-white p-4 rounded-lg mb-6">
-            Time capsule created successfully! Redirecting...
-          </div>
-        )}
-        <form onSubmit={handleSubmit} className="bg-[#262B35] p-6 rounded-lg">
-          <div className="mb-6">
-            <p className="text-gray-400 mb-4 text-sm">
-              Coût de création : 0.01 ETH (environ 25$)
-            </p>
-            <label className="block text-white mb-2">Title</label>
-            <input
-              type="text"
-              className="w-full p-2 rounded bg-[#1E2530] text-white border border-gray-700"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              required
-            />
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-white mb-2">Description</label>
-            <textarea
-              className="w-full p-2 rounded bg-[#1E2530] text-white border border-gray-700 h-32"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              required
-            />
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-white mb-2">Unlock Date</label>
-            <input
-              type="datetime-local"
-              className="w-full p-2 rounded bg-[#1E2530] text-white border border-gray-700"
-              value={formData.unlockDate}
-              onChange={(e) => setFormData({ ...formData, unlockDate: e.target.value })}
-              required
-            />
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-white mb-2">Upload Files</label>
-            <div className="border-2 border-dashed border-gray-700 rounded-lg p-4">
+      {/* Main content */}
+      <div className="relative z-10 max-w-4xl mx-auto p-8">
+        <h1 className="text-5xl font-bold mb-8 text-center animate-float bg-gradient-to-r from-secondary via-primary to-accent bg-clip-text text-transparent">
+          Create Your Time Capsule
+        </h1>
+        
+        <div className="bg-card/20 backdrop-blur-lg rounded-2xl p-8 shadow-cosmic border border-primary/20">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-text-light mb-2 text-lg">Title</label>
               <input
-                type="file"
-                multiple
-                className="hidden"
-                id="file-upload"
-                onChange={handleFileChange}
-                accept="image/*"
+                type="text"
+                className="w-full bg-background/40 border border-primary/30 rounded-lg p-3 text-text-light focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
+                placeholder="Name your capsule"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
-              <label
-                htmlFor="file-upload"
-                className="cursor-pointer text-gray-400 hover:text-[#FFC107] block text-center mb-4"
+            </div>
+
+            <div>
+              <label className="block text-text-light mb-2 text-lg">Description</label>
+              <textarea
+                className="w-full bg-background/40 border border-primary/30 rounded-lg p-3 text-text-light focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all min-h-[120px]"
+                placeholder="Share the story behind this capsule"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-text-light mb-2 text-lg">Unlock Date</label>
+              <input
+                type="datetime-local"
+                className="w-full bg-background/40 border border-primary/30 rounded-lg p-3 text-text-light focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
+                value={formData.unlockDate}
+                onChange={(e) => setFormData({ ...formData, unlockDate: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-text-light mb-2 text-lg">Upload Files</label>
+              <div 
+                className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer 
+                          ${formData.files?.length ? 'border-primary/50 bg-primary/5' : 'border-primary/30 bg-background/40'} 
+                          hover:border-primary/50 hover:bg-primary/5`}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
               >
-                Click to upload or drag and drop files here
-              </label>
-              
-              {/* Image Previews */}
-              {previews.length > 0 && (
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  {previews.map((preview, index) => (
-                    <div key={index} className="relative aspect-square rounded-lg overflow-hidden">
-                      <Image
-                        src={preview}
-                        alt={`Preview ${index + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-              {formData.files && (
-                <FileUploadInfo file={formData.files[0]} maxSize={10} />
+                <input
+                  type="file"
+                  multiple
+                  className="hidden"
+                  id="file-upload"
+                  onChange={handleFileChange}
+                  accept="image/*,video/*,audio/*,application/pdf,.txt,.doc,.docx"
+                />
+                <label htmlFor="file-upload" className="cursor-pointer block">
+                  <div className="text-4xl mb-4">🌟</div>
+                  {formData.files?.length ? (
+                    <>
+                      <p className="text-text-light mb-2">{formData.files.length} file(s) selected</p>
+                      <p className="text-text-muted text-sm">Click or drag to add more files</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-text-light mb-2">Drag and drop your files here</p>
+                      <p className="text-text-muted text-sm">or click to select files</p>
+                      <p className="text-text-muted text-xs mt-2">Supported formats: Images, Videos, Audio, PDF, Text, and Documents</p>
+                    </>
+                  )}
+                </label>
+
+                {/* File Preview Section */}
+                {formData.files && formData.files.length > 0 && (
+                  <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {Array.from(formData.files).map((file, index) => (
+                      <div key={index} className="relative group">
+                        {file.type.startsWith('image/') ? (
+                          <div className="relative aspect-square rounded-lg overflow-hidden border border-primary/20">
+                            <Image
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="aspect-square rounded-lg border border-primary/20 flex items-center justify-center bg-background/40">
+                            <span className="text-2xl">
+                              {file.type.includes('video') ? '🎥' :
+                               file.type.includes('audio') ? '🎵' :
+                               file.type.includes('pdf') ? '📄' :
+                               '📁'}
+                            </span>
+                          </div>
+                        )}
+                        <div className="mt-1 space-y-0.5">
+                          <p className="text-xs text-text-muted truncate">{file.name}</p>
+                          <p className="text-xs text-text-muted/70">{formatFileSize(file.size)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Total size information */}
+                {formData.files && formData.files.length > 0 && (
+                  <div className="mt-4 text-sm text-text-muted">
+                    <p>Total size: {formatFileSize(Array.from(formData.files).reduce((acc, file) => acc + file.size, 0))}</p>
+                    <p className="text-xs text-text-muted/70">Maximum allowed: 10 MB per file</p>
+                  </div>
+                )}
+              </div>
+              {error && (
+                <p className="text-red-500 text-sm mt-2">{error}</p>
               )}
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={isUploading || isConfirming}
-            className="w-full bg-[#FFC107] text-gray-900 py-3 rounded font-medium hover:bg-[#FFD54F] transition disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isUploading ? 'Uploading to IPFS...' : 
-             writeStatus === 'pending' ? 'Confirming Transaction...' : 
-             'Create Time Capsule'}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={isUploading || isConfirming}
+              className="w-full bg-magic hover:bg-magic-shine text-text-light py-4 rounded-lg font-medium transition-all transform hover:scale-105 shadow-cosmic"
+            >
+              {isUploading ? 'Uploading to IPFS...' : 
+               writeStatus === 'pending' ? 'Confirming Transaction...' : 
+               'Create Time Capsule'}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

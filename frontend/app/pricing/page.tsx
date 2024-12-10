@@ -1,173 +1,183 @@
-"use client";
+'use client';
 
 import { ConnectKitButton } from 'connectkit';
 import { useAccount } from 'wagmi';
 import Link from 'next/link';
+import FloatingParticles from '../components/FloatingParticles';
 
 export default function PricingPage() {
   const { isConnected } = useAccount();
 
   return (
-    <div className="min-h-screen bg-[#1E2530]">
-      <div className="max-w-4xl mx-auto p-4">
-        <h1 className="text-4xl font-bold text-white mb-8 text-center">Tarification des Capsules Temporelles</h1>
+    <div className="min-h-screen bg-background relative overflow-hidden pt-20">
+      {/* Background gradients */}
+      <div className="fixed inset-0 bg-nebula opacity-80" />
+      <div className="fixed inset-0 bg-stardust opacity-60" />
+      <div className="fixed inset-0 bg-aurora opacity-40" />
+      
+      <FloatingParticles />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-12">
+        <h1 className="text-5xl font-bold text-center mb-12 animate-float bg-gradient-to-r from-secondary via-primary to-accent bg-clip-text text-transparent">
+          Time Capsule Pricing
+        </h1>
         
-        {/* Modèles de base */}
-        <div className="bg-[#262B35] rounded-lg p-8 mb-8">
-          <h2 className="text-2xl font-semibold text-white mb-6">Modèles de base</h2>
+        {/* Basic Models */}
+        <div className="bg-card/20 backdrop-blur-lg rounded-2xl p-8 mb-8 border border-primary/20 shadow-cosmic">
+          <h2 className="text-2xl font-semibold text-text-light mb-6 bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Basic Models</h2>
           
-          <div className="space-y-8">
-            {/* Petite Capsule */}
-            <div className="border-b border-gray-700 pb-6">
-              <h3 className="text-xl text-[#FFC107] mb-3">Petite Capsule</h3>
-              <div className="flex justify-between items-baseline mb-2">
-                <p className="text-2xl font-bold text-white">2 USDC</p>
-                <p className="text-gray-400">Jusqu'à 10 Mo, 5 ans</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Small Capsule */}
+            <div className="bg-background/30 rounded-xl p-6 backdrop-blur-sm hover:backdrop-blur-lg transition-all transform hover:-translate-y-2 border border-primary/10 hover:border-primary/30">
+              <h3 className="text-xl text-primary mb-3">Small Capsule</h3>
+              <div className="flex justify-between items-baseline mb-4">
+                <p className="text-3xl font-bold text-text-light">2 USDC</p>
+                <p className="text-text-muted">Up to 10 MB, 5 years</p>
               </div>
-              <ul className="text-gray-300 space-y-2 mt-4">
+              <ul className="text-text-light space-y-2 mt-4">
                 <li className="flex items-center">
-                  <span className="text-[#FFC107] mr-2">✓</span>
-                  Stockage sécurisé pendant 5 ans
+                  <span className="text-primary mr-2">✓</span>
+                  Secure storage for 5 years
                 </li>
                 <li className="flex items-center">
-                  <span className="text-[#FFC107] mr-2">✓</span>
-                  Parfait pour les souvenirs personnels
+                  <span className="text-primary mr-2">✓</span>
+                  Perfect for personal memories
                 </li>
               </ul>
             </div>
 
-            {/* Capsule Moyenne */}
-            <div className="border-b border-gray-700 pb-6">
-              <h3 className="text-xl text-[#FFC107] mb-3">Capsule Moyenne</h3>
-              <div className="flex justify-between items-baseline mb-2">
-                <p className="text-2xl font-bold text-white">6 USDC</p>
-                <p className="text-gray-400">Jusqu'à 50 Mo, 10 ans</p>
+            {/* Medium Capsule */}
+            <div className="bg-background/30 rounded-xl p-6 backdrop-blur-sm hover:backdrop-blur-lg transition-all transform hover:-translate-y-2 border border-primary/10 hover:border-primary/30">
+              <h3 className="text-xl text-primary mb-3">Medium Capsule</h3>
+              <div className="flex justify-between items-baseline mb-4">
+                <p className="text-3xl font-bold text-text-light">6 USDC</p>
+                <p className="text-text-muted">Up to 50 MB, 10 years</p>
               </div>
-              <ul className="text-gray-300 space-y-2 mt-4">
+              <ul className="text-text-light space-y-2 mt-4">
                 <li className="flex items-center">
-                  <span className="text-[#FFC107] mr-2">✓</span>
-                  Stockage sécurisé pendant 10 ans
+                  <span className="text-primary mr-2">✓</span>
+                  Secure storage for 10 years
                 </li>
                 <li className="flex items-center">
-                  <span className="text-[#FFC107] mr-2">✓</span>
-                  Idéal pour les collections de photos
+                  <span className="text-primary mr-2">✓</span>
+                  Ideal for photo collections
                 </li>
               </ul>
             </div>
 
-            {/* Grande Capsule */}
-            <div className="border-b border-gray-700 pb-6">
-              <h3 className="text-xl text-[#FFC107] mb-3">Grande Capsule</h3>
-              <div className="flex justify-between items-baseline mb-2">
-                <p className="text-2xl font-bold text-white">11 USDC</p>
-                <p className="text-gray-400">Jusqu'à 100 Mo, 20 ans</p>
+            {/* Large Capsule */}
+            <div className="bg-background/30 rounded-xl p-6 backdrop-blur-sm hover:backdrop-blur-lg transition-all transform hover:-translate-y-2 border border-primary/10 hover:border-primary/30">
+              <h3 className="text-xl text-primary mb-3">Large Capsule</h3>
+              <div className="flex justify-between items-baseline mb-4">
+                <p className="text-3xl font-bold text-text-light">11 USDC</p>
+                <p className="text-text-muted">Up to 100 MB, 20 years</p>
               </div>
-              <ul className="text-gray-300 space-y-2 mt-4">
+              <ul className="text-text-light space-y-2 mt-4">
                 <li className="flex items-center">
-                  <span className="text-[#FFC107] mr-2">✓</span>
-                  Stockage sécurisé pendant 20 ans
+                  <span className="text-primary mr-2">✓</span>
+                  Secure storage for 20 years
                 </li>
                 <li className="flex items-center">
-                  <span className="text-[#FFC107] mr-2">✓</span>
-                  Parfait pour les archives familiales
+                  <span className="text-primary mr-2">✓</span>
+                  Perfect for family archives
                 </li>
               </ul>
             </div>
           </div>
         </div>
 
-        {/* Options Premium */}
-        <div className="bg-[#262B35] rounded-lg p-8 mb-8">
-          <h2 className="text-2xl font-semibold text-white mb-6">Options Premium</h2>
+        {/* Premium Options */}
+        <div className="bg-card/20 backdrop-blur-lg rounded-2xl p-8 mb-8 border border-primary/20 shadow-cosmic">
+          <h2 className="text-2xl font-semibold text-text-light mb-6 bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Premium Options</h2>
           
-          <div className="space-y-8">
-            {/* Capsule Premium */}
-            <div className="border-b border-gray-700 pb-6">
-              <h3 className="text-xl text-[#FFC107] mb-3">Capsule Premium</h3>
-              <div className="flex justify-between items-baseline mb-2">
-                <p className="text-2xl font-bold text-white">25 USDC</p>
-                <p className="text-gray-400">Jusqu'à 100 Mo, 50 ans</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Premium Capsule */}
+            <div className="bg-background/30 rounded-xl p-6 backdrop-blur-sm hover:backdrop-blur-lg transition-all transform hover:-translate-y-2 border border-primary/10 hover:border-primary/30">
+              <h3 className="text-xl text-primary mb-3">Premium Capsule</h3>
+              <div className="flex justify-between items-baseline mb-4">
+                <p className="text-3xl font-bold text-text-light">25 USDC</p>
+                <p className="text-text-muted">Up to 100 MB, 50 years</p>
               </div>
-              <ul className="text-gray-300 space-y-2 mt-4">
+              <ul className="text-text-light space-y-2 mt-4">
                 <li className="flex items-center">
-                  <span className="text-[#FFC107] mr-2">✓</span>
-                  Stockage sécurisé pendant 50 ans
+                  <span className="text-primary mr-2">✓</span>
+                  Secure storage for 50 years
                 </li>
                 <li className="flex items-center">
-                  <span className="text-[#FFC107] mr-2">✓</span>
-                  Accès aux fonctionnalités premium
+                  <span className="text-primary mr-2">✓</span>
+                  Access to premium features
                 </li>
               </ul>
             </div>
 
-            {/* Capsule Éternelle */}
-            <div className="border-b border-gray-700 pb-6">
-              <h3 className="text-xl text-[#FFC107] mb-3">Capsule Éternelle</h3>
-              <div className="flex justify-between items-baseline mb-2">
-                <p className="text-2xl font-bold text-white">65 USDC</p>
-                <p className="text-gray-400">Jusqu'à 100 Mo, durée indéfinie</p>
+            {/* Eternal Capsule */}
+            <div className="bg-background/30 rounded-xl p-6 backdrop-blur-sm hover:backdrop-blur-lg transition-all transform hover:-translate-y-2 border border-primary/10 hover:border-primary/30">
+              <h3 className="text-xl text-primary mb-3">Eternal Capsule</h3>
+              <div className="flex justify-between items-baseline mb-4">
+                <p className="text-3xl font-bold text-text-light">65 USDC</p>
+                <p className="text-text-muted">Up to 100 MB, indefinite</p>
               </div>
-              <ul className="text-gray-300 space-y-2 mt-4">
+              <ul className="text-text-light space-y-2 mt-4">
                 <li className="flex items-center">
-                  <span className="text-[#FFC107] mr-2">✓</span>
-                  Stockage permanent
+                  <span className="text-primary mr-2">✓</span>
+                  Permanent storage
                 </li>
                 <li className="flex items-center">
-                  <span className="text-[#FFC107] mr-2">✓</span>
-                  Toutes les fonctionnalités premium incluses
+                  <span className="text-primary mr-2">✓</span>
+                  All premium features included
                 </li>
               </ul>
             </div>
           </div>
         </div>
 
-        {/* Services supplémentaires */}
-        <div className="bg-[#262B35] rounded-lg p-8 mb-8">
-          <h2 className="text-2xl font-semibold text-white mb-6">Services supplémentaires</h2>
+        {/* Additional Services */}
+        <div className="bg-card/20 backdrop-blur-lg rounded-2xl p-8 mb-8 border border-primary/20 shadow-cosmic">
+          <h2 className="text-2xl font-semibold text-text-light mb-6 bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Additional Services</h2>
           
           <div className="space-y-4">
-            <div className="flex justify-between items-center text-gray-300">
-              <span>Stockage supplémentaire</span>
-              <span className="font-semibold">0.5 USDC / 10 Mo</span>
+            <div className="flex justify-between items-center text-text-light">
+              <span>Additional Storage</span>
+              <span className="font-semibold">0.5 USDC / 10 MB</span>
             </div>
-            <div className="flex justify-between items-center text-gray-300">
-              <span>Paramètres d'accès personnalisés</span>
+            <div className="flex justify-between items-center text-text-light">
+              <span>Custom Access Settings</span>
               <span className="font-semibold">1.5 USDC</span>
             </div>
           </div>
         </div>
 
-        {/* Frais de Transaction */}
-        <div className="bg-[#262B35] rounded-lg p-8 mb-8">
-          <h2 className="text-2xl font-semibold text-white mb-6">Frais de Transaction</h2>
+        {/* Transaction Fees */}
+        <div className="bg-card/20 backdrop-blur-lg rounded-2xl p-8 mb-12 border border-primary/20 shadow-cosmic">
+          <h2 className="text-2xl font-semibold text-text-light mb-6 bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Transaction Fees</h2>
           
           <div className="space-y-6">
-            <div className="border-b border-gray-700 pb-4">
-              <div className="flex justify-between items-center text-gray-300 mb-2">
-                <span>Frais fixe par transaction</span>
+            <div className="border-b border-primary/20 pb-4">
+              <div className="flex justify-between items-center text-text-light mb-2">
+                <span>Fixed fee per transaction</span>
                 <span className="font-semibold">0.50 USDC</span>
               </div>
-              <p className="text-sm text-gray-400">Appliqué à chaque création de capsule</p>
+              <p className="text-sm text-text-muted">Applied to each capsule creation</p>
             </div>
             
-            <div className="border-b border-gray-700 pb-4">
-              <div className="flex justify-between items-center text-gray-300 mb-2">
-                <span>Commission sur transaction</span>
+            <div className="border-b border-primary/20 pb-4">
+              <div className="flex justify-between items-center text-text-light mb-2">
+                <span>Transaction commission</span>
                 <span className="font-semibold">2%</span>
               </div>
-              <p className="text-sm text-gray-400">Pourcentage appliqué sur le montant total</p>
+              <p className="text-sm text-text-muted">Percentage applied to total amount</p>
             </div>
 
-            {/* Exemple de calcul */}
-            <div className="bg-[#1E2530] rounded-lg p-4">
-              <h3 className="text-lg text-[#FFC107] mb-3">Exemple de calcul</h3>
-              <p className="text-gray-300 mb-2">Pour une Petite Capsule à 2 USDC :</p>
-              <ul className="space-y-2 text-gray-400">
-                <li>Prix de base : 2.00 USDC</li>
-                <li>Frais fixe : +0.50 USDC</li>
-                <li>Commission (2%) : +0.04 USDC</li>
-                <li className="text-white font-semibold pt-2 border-t border-gray-700">
-                  Total : 2.54 USDC
+            {/* Calculation Example */}
+            <div className="bg-background/30 rounded-xl p-6 backdrop-blur-sm">
+              <h3 className="text-lg text-primary mb-3">Calculation Example</h3>
+              <p className="text-text-light mb-2">For a Small Capsule at 2 USDC:</p>
+              <ul className="space-y-2 text-text-muted">
+                <li>Base price: 2.00 USDC</li>
+                <li>Fixed fee: +0.50 USDC</li>
+                <li>Commission (2%): +0.04 USDC</li>
+                <li className="text-text-light font-semibold pt-2 border-t border-primary/20">
+                  Total: 2.54 USDC
                 </li>
               </ul>
             </div>
@@ -179,13 +189,13 @@ export default function PricingPage() {
           {isConnected ? (
             <Link 
               href="/create" 
-              className="inline-block bg-[#FFC107] text-gray-900 px-8 py-3 rounded-lg font-medium hover:bg-[#FFD54F] transition"
+              className="inline-block bg-magic hover:bg-magic-shine text-text-light px-8 py-4 rounded-lg font-medium transition-all transform hover:scale-105 shadow-cosmic"
             >
-              Créer une capsule
+              Create a Capsule
             </Link>
           ) : (
             <div className="space-y-4">
-              <p className="text-gray-400 mb-4">Connectez votre portefeuille pour créer une capsule</p>
+              <p className="text-text-muted mb-4">Connect your wallet to create a capsule</p>
               <ConnectKitButton />
             </div>
           )}
