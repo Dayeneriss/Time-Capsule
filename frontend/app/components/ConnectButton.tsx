@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react';
 
 export default function ConnectButton() {
   const { isConnected, address } = useAccount();
-  const { connect, connectors, isLoading: isConnecting } = useConnect();
+  const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const [mounted, setMounted] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -36,9 +37,21 @@ export default function ConnectButton() {
 
   const connector = connectors.find((c) => c.name === 'MetaMask');
 
+  const handleConnect = async () => {
+    if (!connector) return;
+    setIsConnecting(true);
+    try {
+      await connect({ connector });
+    } catch (error) {
+      console.error('Failed to connect:', error);
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
   return (
     <button
-      onClick={() => connector && connect({ connector })}
+      onClick={handleConnect}
       className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
       disabled={isConnecting}
     >
