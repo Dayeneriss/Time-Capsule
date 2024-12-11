@@ -29,9 +29,10 @@ yarn-error.log*
 .vscode/
 .idea/
 
-# Only keep frontend and backend directories
+# Only keep frontend and backend directories and configuration files
 /*
 !/frontend/
 !/backend/
 !.gitignore
 !README.md
+!netlify.toml
