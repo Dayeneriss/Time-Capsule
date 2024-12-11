@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import { timeCapsuleABI } from '@/contracts/TimeCapsuleABI';
 import { Address } from 'viem';
+import { TimeCapsule } from '../types/capsule';
 
 export function useTimeCapsule() {
   const { address: userAddress } = useAccount();
@@ -20,10 +21,10 @@ export function useTimeCapsule() {
     functionName: 'getCapsulesByOwner',
     args: userAddress ? [userAddress] : undefined,
     enabled: Boolean(userAddress && contractAddress),
-  });
+  }) as { data: TimeCapsule[] | undefined };
 
   return {
-    userCapsules,
+    userCapsules: userCapsules || [],
     contractAddress,
     isReady: Boolean(contractAddress),
   };

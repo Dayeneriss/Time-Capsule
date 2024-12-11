@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTimeCapsule } from '../hooks/useTimeCapsule';
+import { TimeCapsule } from '../types/capsule';
 
 interface Notification {
   id: string;
@@ -21,38 +22,33 @@ export default function NotificationSystem() {
   }
 
   useEffect(() => {
-    if (!userCapsules) return;
-
     // Check for expired capsules
     const checkExpiredCapsules = () => {
       const currentTime = Math.floor(Date.now() / 1000);
-      
-      userCapsules.forEach((capsule: any) => {
+
+      userCapsules.forEach((capsule: TimeCapsule) => {
         if (
-          capsule.unlockTime <= currentTime && 
+          capsule.unlockTime <= currentTime &&
           !localStorage.getItem(`notified-${capsule.id}`)
         ) {
-          // Add notification
           const notification: Notification = {
             id: `capsule-${capsule.id}`,
-            title: 'Capsule Temporelle Déverrouillée!',
-            message: `Votre capsule "${capsule.title}" est maintenant disponible!`,
-            type: 'success',
-            timestamp: currentTime,
+            title: 'Capsule Ready!',
+            message: `Your time capsule is now ready to be opened!`,
+            type: 'info',
+            timestamp: Date.now(),
           };
 
-          setNotifications(prev => [...prev, notification]);
-          
-          // Mark as notified
+          setNotifications((prev) => [...prev, notification]);
           localStorage.setItem(`notified-${capsule.id}`, 'true');
         }
       });
     };
 
-    // Initial check
+    // Check immediately
     checkExpiredCapsules();
 
-    // Set up interval for periodic checks
+    // Set up interval to check periodically
     const interval = setInterval(checkExpiredCapsules, 60000); // Check every minute
 
     return () => clearInterval(interval);
@@ -60,33 +56,32 @@ export default function NotificationSystem() {
 
   // Remove a notification
   const removeNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
+    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
   };
 
   if (notifications.length === 0) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 space-y-2">
-      {notifications.map(notification => (
+    <div className="fixed bottom-4 right-4 z-50">
+      {notifications.map((notification) => (
         <div
           key={notification.id}
-          className={`p-4 rounded-lg shadow-lg max-w-sm ${
-            notification.type === 'success' ? 'bg-green-100' :
-            notification.type === 'warning' ? 'bg-yellow-100' : 'bg-blue-100'
-          }`}
+          className={`mb-2 p-4 rounded-lg shadow-lg ${
+            notification.type === 'info'
+              ? 'bg-blue-500'
+              : notification.type === 'success'
+              ? 'bg-green-500'
+              : 'bg-yellow-500'
+          } text-white`}
         >
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-bold">{notification.title}</h3>
-              <p className="text-sm">{notification.message}</p>
-            </div>
-            <button
-              onClick={() => removeNotification(notification.id)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              ×
-            </button>
-          </div>
+          <h4 className="font-bold">{notification.title}</h4>
+          <p>{notification.message}</p>
+          <button
+            onClick={() => removeNotification(notification.id)}
+            className="mt-2 text-sm underline"
+          >
+            Dismiss
+          </button>
         </div>
       ))}
     </div>
