@@ -22,39 +22,6 @@ export default function WalletInfo() {
     }
   }
 
-  // Example USDC transaction (disabled)
-  const handleSendUSDC = async () => {
-    if (!amount || !recipientAddress) return
-    try {
-      const USDC_CONTRACT = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' // Mainnet USDC
-      // USDC transfer functionality removed
-      console.log('USDC transfers not implemented yet')
-    } catch (err) {
-      console.error('Failed to send USDC:', err)
-    }
-  }
-
-  // Example batch transaction (disabled)
-  const handleBatchTransfer = async () => {
-    if (!amount || !recipientAddress) return
-    try {
-      const transactions = [
-        {
-          to: recipientAddress,
-          value: amount
-        },
-        {
-          to: recipientAddress,
-          value: amount
-        }
-      ]
-      // Batch transaction functionality removed
-      console.log('Batch transactions not implemented yet')
-    } catch (err) {
-      console.error('Failed to send batch transactions:', err)
-    }
-  }
-
   if (!isConnected) {
     return null
   }
@@ -102,22 +69,6 @@ export default function WalletInfo() {
             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
             Send ETH
-          </button>
-
-          <button
-            onClick={handleSendUSDC}
-            disabled={true}
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
-          >
-            Send USDC (Not Implemented)
-          </button>
-
-          <button
-            onClick={handleBatchTransfer}
-            disabled={true}
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
-          >
-            Batch Transfer (Not Implemented)
           </button>
         </div>
 
