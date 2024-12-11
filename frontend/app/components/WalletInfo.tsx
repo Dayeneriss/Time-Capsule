@@ -8,7 +8,7 @@ export default function WalletInfo() {
   const [amount, setAmount] = useState('')
   const [recipientAddress, setRecipientAddress] = useState('')
 
-  // Example ETH transaction
+  // Handle ETH transaction
   const handleSendEth = async () => {
     if (!amount || !recipientAddress) return
     try {
