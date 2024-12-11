@@ -14,24 +14,36 @@ interface Notification {
   timestamp: number;
 }
 
+function useContractAddress() {
+  const [contractAddress, setContractAddress] = useState<Address | undefined>(undefined);
+
+  useEffect(() => {
+    const address = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+    if (address?.startsWith('0x')) {
+      setContractAddress(address as Address);
+    }
+  }, []);
+
+  return contractAddress;
+}
+
 export default function NotificationSystem() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { address } = useAccount();
-  const contractAddressRaw = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+  const contractAddress = useContractAddress();
 
-  // Don't render anything if contract address is not available
-  if (!contractAddressRaw?.startsWith('0x')) {
+  if (!contractAddress) {
     console.warn('Invalid or missing contract address');
     return null;
   }
 
   // Read user's capsules
   const { data: userCapsules } = useReadContract({
-    address: contractAddressRaw as Address,
+    address: contractAddress,
     abi: timeCapsuleABI,
     functionName: 'getCapsulesByOwner',
     args: [address],
-    enabled: !!address && !!contractAddressRaw,
+    enabled: !!address && !!contractAddress,
   });
 
   useEffect(() => {
