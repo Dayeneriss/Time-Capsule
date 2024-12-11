@@ -37,3 +37,6 @@ yarn-error.log*
 !README.md
 !package.json
 !package-lock.json
+!tailwind.config.js
+!postcss.config.js
+!next.config.js
