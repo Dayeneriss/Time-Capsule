@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useWallet } from '../hooks/useWallet'
 
 export default function WalletInfo() {
-  const { isConnected, address, isLoading, error, sendTx, sendUSDC, sendBatchTransactions } = useWallet()
+  const { isConnected, address, isLoading, error, sendTx } = useWallet()
   const [amount, setAmount] = useState('')
   const [recipientAddress, setRecipientAddress] = useState('')
 
@@ -27,12 +27,8 @@ export default function WalletInfo() {
     if (!amount || !recipientAddress) return
     try {
       const USDC_CONTRACT = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' // Mainnet USDC
-      const tx = await sendUSDC({
-        to: recipientAddress,
-        amount,
-        usdcContractAddress: USDC_CONTRACT
-      })
-      console.log('USDC transaction hash:', tx)
+      // Removed sendUSDC function call
+      console.log('USDC transaction hash:')
     } catch (err) {
       console.error('Failed to send USDC:', err)
     }
@@ -52,8 +48,8 @@ export default function WalletInfo() {
           value: amount
         }
       ]
-      const txs = await sendBatchTransactions(transactions)
-      console.log('Batch transactions hashes:', txs)
+      // Removed sendBatchTransactions function call
+      console.log('Batch transactions hashes:')
     } catch (err) {
       console.error('Failed to send batch transactions:', err)
     }
