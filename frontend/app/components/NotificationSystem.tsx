@@ -1,10 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAccount } from 'wagmi';
-import { useReadContract } from 'wagmi';
-import { timeCapsuleABI } from '@/contracts/TimeCapsuleABI';
-import { Address } from 'viem';
+import { useTimeCapsule } from '../hooks/useTimeCapsule';
 
 interface Notification {
   id: string;
@@ -14,40 +11,17 @@ interface Notification {
   timestamp: number;
 }
 
-function useContractAddress() {
-  const [contractAddress, setContractAddress] = useState<Address | undefined>(undefined);
-
-  useEffect(() => {
-    const address = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
-    if (address?.startsWith('0x')) {
-      setContractAddress(address as Address);
-    }
-  }, []);
-
-  return contractAddress;
-}
-
 export default function NotificationSystem() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const { address } = useAccount();
-  const contractAddress = useContractAddress();
+  const { userCapsules, isReady } = useTimeCapsule();
 
-  if (!contractAddress) {
-    console.warn('Invalid or missing contract address');
+  if (!isReady) {
+    console.warn('Contract not ready');
     return null;
   }
 
-  // Read user's capsules
-  const { data: userCapsules } = useReadContract({
-    address: contractAddress,
-    abi: timeCapsuleABI,
-    functionName: 'getCapsulesByOwner',
-    args: [address],
-    enabled: !!address && !!contractAddress,
-  });
-
   useEffect(() => {
-    if (!userCapsules || !address) return;
+    if (!userCapsules) return;
 
     // Check for expired capsules
     const checkExpiredCapsules = () => {
@@ -82,7 +56,7 @@ export default function NotificationSystem() {
     const interval = setInterval(checkExpiredCapsules, 60000); // Check every minute
 
     return () => clearInterval(interval);
-  }, [userCapsules, address]);
+  }, [userCapsules]);
 
   // Remove a notification
   const removeNotification = (id: string) => {
