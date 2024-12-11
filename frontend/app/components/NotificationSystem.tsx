@@ -26,11 +26,11 @@ export default function NotificationSystem() {
 
   // Read user's capsules
   const { data: userCapsules } = useReadContract({
-    address: contractAddress as `0x${string}`,
+    address: contractAddress,
     abi: timeCapsuleABI,
     functionName: 'getCapsulesByOwner',
     args: [address],
-    enabled: !!address,
+    enabled: !!address && !!contractAddress,
   });
 
   useEffect(() => {
