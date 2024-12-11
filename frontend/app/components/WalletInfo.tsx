@@ -8,7 +8,7 @@ export default function WalletInfo() {
   const [amount, setAmount] = useState('')
   const [recipientAddress, setRecipientAddress] = useState('')
 
-  // Exemple de transaction ETH
+  // Example ETH transaction
   const handleSendEth = async () => {
     if (!amount || !recipientAddress) return
     try {
@@ -22,19 +22,19 @@ export default function WalletInfo() {
     }
   }
 
-  // Exemple de transaction USDC
+  // Example USDC transaction (disabled)
   const handleSendUSDC = async () => {
     if (!amount || !recipientAddress) return
     try {
       const USDC_CONTRACT = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' // Mainnet USDC
-      // Removed sendUSDC function call
-      console.log('USDC transaction hash:')
+      // USDC transfer functionality removed
+      console.log('USDC transfers not implemented yet')
     } catch (err) {
       console.error('Failed to send USDC:', err)
     }
   }
 
-  // Exemple de batch transactions
+  // Example batch transaction (disabled)
   const handleBatchTransfer = async () => {
     if (!amount || !recipientAddress) return
     try {
@@ -48,8 +48,8 @@ export default function WalletInfo() {
           value: amount
         }
       ]
-      // Removed sendBatchTransactions function call
-      console.log('Batch transactions hashes:')
+      // Batch transaction functionality removed
+      console.log('Batch transactions not implemented yet')
     } catch (err) {
       console.error('Failed to send batch transactions:', err)
     }
@@ -106,18 +106,18 @@ export default function WalletInfo() {
 
           <button
             onClick={handleSendUSDC}
-            disabled={isLoading}
+            disabled={true}
             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
           >
-            Send USDC
+            Send USDC (Not Implemented)
           </button>
 
           <button
             onClick={handleBatchTransfer}
-            disabled={isLoading}
+            disabled={true}
             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
           >
-            Batch Transfer
+            Batch Transfer (Not Implemented)
           </button>
         </div>
 
