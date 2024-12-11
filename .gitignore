@@ -35,6 +35,5 @@ yarn-error.log*
 !/backend/
 !.gitignore
 !README.md
-!netlify.toml
 !package.json
 !package-lock.json
