@@ -1,6 +1,5 @@
-import { useAccount } from 'wagmi'
-import { useContractWrite, usePrepareContractWrite } from 'wagmi'
-import { CONTRACT_ADDRESS, CONTRACT_ABI } from '../../constants/contracts'
+import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi'
+import { CONTRACT_ADDRESS, CONTRACT_ABI } from '@/contracts/TimeCapsuleABI'
 
 export default function InstructionsComponent() {
     const { address } = useAccount()
@@ -9,7 +8,7 @@ export default function InstructionsComponent() {
         address: CONTRACT_ADDRESS,
         abi: CONTRACT_ABI,
         functionName: 'createCapsule',
-        args: ['My first capsule', Date.now() + 86400000], // Débloquable dans 24h
+        args: ['My first capsule', BigInt(Date.now() + 86400000)], // Débloquable dans 24h
     })
 
     const { write: createCapsule } = useContractWrite(config)

@@ -3,6 +3,10 @@ pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
+/**
+ * @title TimeCapsule
+ * @dev Un contrat permettant de créer des capsules temporelles sur la blockchain
+ */
 contract TimeCapsule is ReentrancyGuard {
     // Ajout de métadonnées importantes 
     struct Capsule {  

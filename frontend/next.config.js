@@ -1,15 +1,21 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  output: 'export',
-  images: {
-    unoptimized: true
-  },
-  trailingSlash: true,
-  reactStrictMode: true,
-  webpack: (config) => {
-    config.resolve.fallback = { fs: false, net: false };
-    return config;
-  }
-}
+/** @type {import('next').NextConfig} */  
+const nextConfig = {  
+  webpack: (config) => {  
+    config.resolve.fallback = {  
+      ...config.resolve.fallback,  
+      encoding: false,  
+      "pino-pretty": false,  
+      fs: false,  
+      net: false  
+    };  
+    return config;  
+  },  
+  output: 'export',  
+  images: {  
+    unoptimized: true  
+  },  
+  trailingSlash: true,  
+  reactStrictMode: true  
+}  
 
-module.exports = nextConfig;
+module.exports = nextConfig;  

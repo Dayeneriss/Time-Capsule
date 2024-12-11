@@ -16,12 +16,11 @@ export default function NotificationSystem() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { userCapsules, isReady } = useTimeCapsule();
 
-  if (!isReady) {
-    console.warn('Contract not ready');
-    return null;
-  }
-
   useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+
     // Check for expired capsules
     const checkExpiredCapsules = () => {
       const currentTime = Math.floor(Date.now() / 1000);
@@ -52,14 +51,14 @@ export default function NotificationSystem() {
     const interval = setInterval(checkExpiredCapsules, 60000); // Check every minute
 
     return () => clearInterval(interval);
-  }, [userCapsules]);
+  }, [userCapsules, isReady]); // Added isReady to dependencies
 
   // Remove a notification
   const removeNotification = (id: string) => {
     setNotifications((prev) => prev.filter((notif) => notif.id !== id));
   };
 
-  if (notifications.length === 0) return null;
+  if (!isReady || notifications.length === 0) return null;
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
