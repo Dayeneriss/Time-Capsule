@@ -13,22 +13,20 @@ interface Notification {
   timestamp: number;
 }
 
-// Validate contract address
-const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
-if (!CONTRACT_ADDRESS || !CONTRACT_ADDRESS.startsWith('0x')) {
-  throw new Error('Invalid or missing NEXT_PUBLIC_CONTRACT_ADDRESS');
-}
-
-// Ensure the contract address is properly typed
-const TYPED_CONTRACT_ADDRESS = CONTRACT_ADDRESS as `0x${string}`;
-
 export default function NotificationSystem() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { address } = useAccount();
+  const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+
+  // Don't render anything if contract address is not available
+  if (!contractAddress?.startsWith('0x')) {
+    console.warn('Invalid or missing contract address');
+    return null;
+  }
 
   // Read user's capsules
   const { data: userCapsules } = useReadContract({
-    address: TYPED_CONTRACT_ADDRESS,
+    address: contractAddress as `0x${string}`,
     abi: timeCapsuleABI,
     functionName: 'getCapsulesByOwner',
     args: [address],

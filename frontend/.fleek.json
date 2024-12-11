@@ -1,0 +1,12 @@
+{
+  "site": {
+    "build": {
+      "baseDir": "",
+      "publicDir": ".fleek",
+      "command": "npm install && fleek-next build",
+      "environment": {
+        "NODE_VERSION": "18"
+      }
+    }
+  }
+}
