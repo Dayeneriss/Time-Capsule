@@ -16,7 +16,7 @@ interface Notification {
 export default function NotificationSystem() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { address } = useAccount();
-  const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+  const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 
   // Don't render anything if contract address is not available
   if (!contractAddress?.startsWith('0x')) {
@@ -26,7 +26,7 @@ export default function NotificationSystem() {
 
   // Read user's capsules
   const { data: userCapsules } = useReadContract({
-    address: contractAddress,
+    address: contractAddress as `0x${string}`,
     abi: timeCapsuleABI,
     functionName: 'getCapsulesByOwner',
     args: [address],
