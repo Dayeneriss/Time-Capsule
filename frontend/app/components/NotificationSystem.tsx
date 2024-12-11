@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { useReadContract } from 'wagmi';
 import { timeCapsuleABI } from '@/contracts/TimeCapsuleABI';
+import { Address } from 'viem';
 
 interface Notification {
   id: string;
@@ -16,21 +17,21 @@ interface Notification {
 export default function NotificationSystem() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { address } = useAccount();
-  const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
+  const contractAddressRaw = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 
   // Don't render anything if contract address is not available
-  if (!contractAddress?.startsWith('0x')) {
+  if (!contractAddressRaw?.startsWith('0x')) {
     console.warn('Invalid or missing contract address');
     return null;
   }
 
   // Read user's capsules
   const { data: userCapsules } = useReadContract({
-    address: contractAddress as `0x${string}`,
+    address: contractAddressRaw as Address,
     abi: timeCapsuleABI,
     functionName: 'getCapsulesByOwner',
     args: [address],
-    enabled: !!address && !!contractAddress,
+    enabled: !!address && !!contractAddressRaw,
   });
 
   useEffect(() => {
