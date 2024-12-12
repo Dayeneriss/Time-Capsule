@@ -7,9 +7,8 @@
     "name": "Time Capsule DApp"
   },
   "build": {
-    "baseDir": "",
+    "baseDir": "frontend",
     "publicDir": "out",
-    "rootDir": "frontend",
     "command": "npm install && npm run build",
     "image": "node:20"
   }
