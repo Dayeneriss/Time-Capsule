@@ -9,6 +9,18 @@ const nextConfig = {
   // Configuration pour IPFS
   assetPrefix: './',
   trailingSlash: true,
+  // Exclure la page pricing de l'export
+  exportPathMap: async function (
+    defaultPathMap,
+    { dev, dir, outDir, distDir, buildId }
+  ) {
+    const paths = {
+      '/': { page: '/' },
+      '/create': { page: '/create' },
+      '/capsules': { page: '/capsules' },
+    }
+    return paths
+  },
 }
 
 module.exports = nextConfig
