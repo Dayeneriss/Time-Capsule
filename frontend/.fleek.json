@@ -4,12 +4,12 @@
     "team": "dayeneriss-team",
     "platform": "ipfs",
     "source": "github",
-    "name": "Time Capsule DApp"
+    "name": "Time-Capsule"
   },
   "build": {
     "baseDir": "frontend",
-    "publicDir": ".fleek",
-    "command": "npm install && fleek-next build",
-    "image": "node:18"
+    "publicDir": "out",
+    "command": "npm install && npm run build",
+    "image": "fleek/node:lts"
   }
 }
