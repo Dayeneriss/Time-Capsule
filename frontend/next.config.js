@@ -8,7 +8,8 @@ const nextConfig = {
   // Désactiver le strict mode pour éviter les doubles rendus en développement
   reactStrictMode: false,
   // Configuration pour IPFS
-  assetPrefix: './',
+  assetPrefix: '/',
+  basePath: '',
   trailingSlash: true,
 }
 
