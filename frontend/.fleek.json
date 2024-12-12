@@ -1,7 +1,20 @@
-{  
-  "build": {  
-    "image": "node:20",  
-    "command": "npm install && npm run build",  
-    "publicDir": "out"  
-  }  
-}  
+{
+  "site": {
+    "id": "time-capsule-dapp",
+    "team": "dayeneriss-team",
+    "platform": "ipfs",
+    "source": "github",
+    "name": "Time Capsule DApp"
+  },
+  "build": {
+    "baseDir": "",
+    "publicDir": "out",
+    "rootDir": "frontend",
+    "command": "npm install && npm run build",
+    "image": "node:20"
+  },
+  "deploy": {
+    "buildCommand": "npm run build",
+    "publishDir": "out"
+  }
+}
