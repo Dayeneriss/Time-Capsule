@@ -1,31 +1,41 @@
 import { useEffect, useState } from 'react';
-import { useAccount, useReadContract } from 'wagmi';
+import { useReadContract } from 'wagmi';
 import { timeCapsuleABI } from '@/contracts/TimeCapsuleABI';
-import { Address } from 'viem';
-import { TimeCapsule } from '../types/capsule';
 
-export function useTimeCapsule() {
-  const { address: userAddress } = useAccount();
-  const [contractAddress, setContractAddress] = useState<Address>();
+interface TimeCapsule {
+  id: string;
+  owner: string;
+  title: string;
+  description: string;
+  metadataCid: string;
+  unlockTimestamp: bigint;
+}
+
+export function useTimeCapsule(userAddress: string | undefined) {
+  const [contractAddress, setContractAddress] = useState<`0x${string}` | undefined>(undefined);
 
   useEffect(() => {
-    const addr = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
-    if (addr?.startsWith('0x')) {
-      setContractAddress(addr as Address);
+    if (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
+      setContractAddress(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`);
     }
   }, []);
 
   const { data: userCapsules } = useReadContract({
-    address: contractAddress,
-    abi: timeCapsuleABI,
-    functionName: 'getCapsulesByOwner',
-    args: userAddress ? [userAddress] : undefined,
-    enabled: Boolean(userAddress && contractAddress),
-  }) as { data: TimeCapsule[] | undefined };
+    ...(contractAddress && userAddress ? {
+      address: contractAddress,
+      abi: timeCapsuleABI,
+      functionName: 'getCapsulesByOwner' as const,
+      args: [userAddress],
+    } : {
+      address: undefined,
+      abi: undefined,
+      functionName: undefined,
+      args: undefined,
+    })
+  });
 
   return {
-    userCapsules: userCapsules || [],
+    userCapsules: userCapsules as TimeCapsule[] | undefined,
     contractAddress,
-    isReady: Boolean(contractAddress),
   };
 }

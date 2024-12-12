@@ -171,7 +171,7 @@ export default function CreatePage() {
         throw new Error('Contract address is not configured');  
       }  
 
-      const { hash } = await writeContract({  
+      const hash = await writeContract({  
         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,  
         abi: timeCapsuleABI,  
         functionName: 'createCapsule',  
@@ -184,15 +184,11 @@ export default function CreatePage() {
         value: parseEther('0.01'),  // Montant correct selon le contrat
       });
 
-      // Attendre la confirmation de la transaction
-      if (hash) {
-        setIsSuccess(true);
-        // Attendre un peu pour montrer le message de succès
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        // Rediriger vers la page des capsules
-        router.push('/capsules');
-      }
-
+      setIsSuccess(true);
+      // Attendre un peu pour montrer le message de succès
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Rediriger vers la page des capsules
+      router.push('/capsules');
     } catch (err) {  
       setError(err instanceof Error ? err.message : 'Failed to create time capsule');  
       console.error('Error creating time capsule:', err);  

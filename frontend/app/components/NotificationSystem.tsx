@@ -2,85 +2,49 @@
 
 import { useEffect, useState } from 'react';
 import { useTimeCapsule } from '../hooks/useTimeCapsule';
-import { TimeCapsule } from '../types/capsule';
+import { useAccount } from 'wagmi';
 
 interface Notification {
   id: string;
   title: string;
-  message: string;
-  type: 'info' | 'success' | 'warning';
-  timestamp: number;
+  description: string;
+  unlockTimestamp: bigint;
 }
 
 export default function NotificationSystem() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const { userCapsules, isReady } = useTimeCapsule();
+  const { address: userAddress } = useAccount();
+  const { userCapsules, contractAddress } = useTimeCapsule(userAddress);
 
   useEffect(() => {
-    if (!isReady) {
+    if (!contractAddress || !userCapsules) {
       return;
     }
 
-    // Check for expired capsules
-    const checkExpiredCapsules = () => {
-      const currentTime = Math.floor(Date.now() / 1000);
+    const now = BigInt(Math.floor(Date.now() / 1000));
+    const unlockedCapsules = userCapsules.filter(
+      (capsule) => capsule.unlockTimestamp <= now
+    );
 
-      userCapsules.forEach((capsule: TimeCapsule) => {
-        if (
-          capsule.unlockTime <= currentTime &&
-          !localStorage.getItem(`notified-${capsule.id}`)
-        ) {
-          const notification: Notification = {
-            id: `capsule-${capsule.id}`,
-            title: 'Capsule Ready!',
-            message: `Your time capsule is now ready to be opened!`,
-            type: 'info',
-            timestamp: Date.now(),
-          };
-
-          setNotifications((prev) => [...prev, notification]);
-          localStorage.setItem(`notified-${capsule.id}`, 'true');
-        }
-      });
-    };
-
-    // Check immediately
-    checkExpiredCapsules();
-
-    // Set up interval to check periodically
-    const interval = setInterval(checkExpiredCapsules, 60000); // Check every minute
-
-    return () => clearInterval(interval);
-  }, [userCapsules, isReady]); // Added isReady to dependencies
-
-  // Remove a notification
-  const removeNotification = (id: string) => {
-    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
-  };
-
-  if (!isReady || notifications.length === 0) return null;
+    setNotifications(
+      unlockedCapsules.map((capsule) => ({
+        id: capsule.id,
+        title: capsule.title,
+        description: capsule.description,
+        unlockTimestamp: capsule.unlockTimestamp,
+      }))
+    );
+  }, [userCapsules, contractAddress]);
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-4 right-4 flex flex-col gap-2">
       {notifications.map((notification) => (
         <div
           key={notification.id}
-          className={`mb-2 p-4 rounded-lg shadow-lg ${
-            notification.type === 'info'
-              ? 'bg-blue-500'
-              : notification.type === 'success'
-              ? 'bg-green-500'
-              : 'bg-yellow-500'
-          } text-white`}
+          className="bg-white rounded-lg shadow-lg p-4 max-w-sm"
         >
-          <h4 className="font-bold">{notification.title}</h4>
-          <p>{notification.message}</p>
-          <button
-            onClick={() => removeNotification(notification.id)}
-            className="mt-2 text-sm underline"
-          >
-            Dismiss
-          </button>
+          <h3 className="font-bold">{notification.title}</h3>
+          <p className="text-sm text-gray-600">{notification.description}</p>
         </div>
       ))}
     </div>

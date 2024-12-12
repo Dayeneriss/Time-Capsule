@@ -14,3 +14,39 @@
       background-color: var(--background-dark);
       color: var(--text-white);
     }
+
+    @layer components {
+        .nav-button {
+            @apply px-4 py-2 rounded-lg font-semibold shadow-lg 
+                   transition-all duration-300 transform 
+                   hover:scale-105 active:scale-95;
+        }
+    
+        .notification {
+            @apply fixed top-20 right-6 p-3 rounded-lg backdrop-blur-sm
+                   shadow-lg z-50 transition-all duration-300;
+        }
+    
+        .notification-success {
+            @apply bg-green-100/10 text-green-500;
+        }
+    
+        .notification-error {
+            @apply bg-red-100/10 text-red-500;
+        }
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    .slide-in {
+        animation: slideIn 0.3s ease-out;
+    }
