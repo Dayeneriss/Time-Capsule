@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Time Capsule DApp
+
+A decentralized application for creating and exploring time capsules on the blockchain.
 
 ## Getting Started
 
@@ -17,6 +19,30 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+
+## Environment Variables
+
+The following environment variables are required:
+
+- `NEXT_PUBLIC_ALCHEMY_API_KEY`: Your Alchemy API key for connecting to the Polygon Mumbai network
+
+### Local Development
+
+1. Copy `.env.example` to `.env.local`:
+```bash
+cp .env.example .env.local
+```
+
+2. Update the variables in `.env.local` with your actual values
+
+### Deployment on Fleek
+
+When deploying on Fleek, make sure to:
+
+1. Add the required environment variables in the Fleek interface:
+   - Go to your project settings
+   - Navigate to "Environment Variables"
+   - Add `NEXT_PUBLIC_ALCHEMY_API_KEY` with your Alchemy API key
 
 ## Learn More
 
