@@ -12,9 +12,5 @@
     "rootDir": "frontend",
     "command": "npm install && npm run build",
     "image": "node:20"
-  },
-  "deploy": {
-    "buildCommand": "npm run build",
-    "publishDir": "out"
   }
 }
