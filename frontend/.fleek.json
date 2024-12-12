@@ -8,7 +8,7 @@
   },
   "build": {
     "baseDir": "frontend",
-    "publicDir": "out",
+    "publicDir": "dist",
     "command": "npm install && npm run build",
     "image": "fleek/node:lts"
   }
