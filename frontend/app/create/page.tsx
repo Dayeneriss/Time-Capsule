@@ -50,13 +50,14 @@ export default function CreatePage() {
       const results = await Promise.all(uploadPromises);
       
       // Filter out any null results and get the first CID
-      const successfulUploads = results.filter(result => result !== null);
+      const successfulUploads = results.filter((result): result is string => result !== null);
       if (successfulUploads.length === 0) {
         throw new Error('Failed to upload files');
       }
       
       // Return the first CID (removing ipfs:// prefix)
-      return successfulUploads[0].replace('ipfs://', '');
+      const firstUpload = successfulUploads[0];
+      return firstUpload.replace('ipfs://', '');
     } catch (error) {
       console.error('Error uploading to Pinata:', error);
       throw error;
