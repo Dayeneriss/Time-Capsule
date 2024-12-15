@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { parseEther } from 'viem';  
 import { useWriteContract, useWatchContractEvent } from 'wagmi';  
 import { timeCapsuleABI } from '@/contracts/TimeCapsuleABI';  
+import { uploadToIPFS } from '@/utils/pinata';
 import FileUploadInfo from '../components/FileUploadInfo';
 import FloatingParticles from '../components/FloatingParticles';
 
@@ -44,35 +45,21 @@ export default function CreatePage() {
   }, [previews]);
 
   const uploadToPinata = async (files: File[]) => {
-    if (!process.env.NEXT_PUBLIC_PINATA_JWT) {  
-      throw new Error('Pinata JWT is not configured');  
-    }
-
     try {
-      // Create form data for files
-      const formData = new FormData();
-      files.forEach((file) => {
-        formData.append('file', file);
-      });
-
-      // Upload to Pinata
-      const res = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`
-        },
-        body: formData
-      });
-
-      if (!res.ok) {
-        throw new Error('Failed to upload to Pinata');
+      const uploadPromises = files.map(file => uploadToIPFS(file));
+      const results = await Promise.all(uploadPromises);
+      
+      // Filter out any null results and get the first CID
+      const successfulUploads = results.filter(result => result !== null);
+      if (successfulUploads.length === 0) {
+        throw new Error('Failed to upload files');
       }
-
-      const data = await res.json();
-      return data.IpfsHash;
+      
+      // Return the first CID (removing ipfs:// prefix)
+      return successfulUploads[0].replace('ipfs://', '');
     } catch (error) {
       console.error('Error uploading to Pinata:', error);
-      throw new Error('Failed to upload files to IPFS');
+      throw error;
     }
   };
 
