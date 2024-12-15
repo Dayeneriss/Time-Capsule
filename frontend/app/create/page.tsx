@@ -44,19 +44,25 @@ export default function CreatePage() {
     };
   }, [previews]);
 
-  const uploadToPinata = async (files: File[]) => {
+  const uploadToPinata = async (files: File[]): Promise<string> => {
     try {
       const uploadPromises = files.map(file => uploadToIPFS(file));
       const results = await Promise.all(uploadPromises);
       
-      // Filter out any null results and get the first CID
+      // Filter out any null results
       const successfulUploads = results.filter((result): result is string => result !== null);
+      
+      // Ensure we have at least one successful upload
       if (successfulUploads.length === 0) {
         throw new Error('Failed to upload files');
       }
       
-      // Return the first CID (removing ipfs:// prefix)
+      // Get the first upload and remove the ipfs:// prefix
       const firstUpload = successfulUploads[0];
+      if (!firstUpload) {
+        throw new Error('No successful uploads found');
+      }
+      
       return firstUpload.replace('ipfs://', '');
     } catch (error) {
       console.error('Error uploading to Pinata:', error);
