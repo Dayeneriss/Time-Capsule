@@ -50,6 +50,9 @@ export default function CreatePage() {
     try {
       const uploadPromises = files.map(file => uploadToIPFS(file));
       const results = await Promise.all(uploadPromises);
+      if (!results[0]) {
+        throw new Error('No CID returned from IPFS upload');
+      }
       return results[0]; // Return the first CID for now
     } catch (error) {
       console.error('Error uploading to Pinata:', error);
