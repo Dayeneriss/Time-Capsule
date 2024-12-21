@@ -11,13 +11,15 @@ import { timeCapsuleABI } from '@/contracts/TimeCapsuleABI';
 import { uploadToIPFS } from '@/utils/pinata';
 import FileUploadInfo from '../components/FileUploadInfo';
 import FloatingParticles from '../components/FloatingParticles';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 // Modifiez l'interface du formData  
 interface FormData {  
   title: string;  
   description: string;  
   unlockDate: string;  
-  files: File[] | null; // Utilisez le type File natif  
+  files: File[] | null;
 }  
 
 export default function CreatePage() {
@@ -48,53 +50,24 @@ export default function CreatePage() {
     try {
       const uploadPromises = files.map(file => uploadToIPFS(file));
       const results = await Promise.all(uploadPromises);
-      
-      // Filter out any null results
-      const successfulUploads = results.filter((result): result is string => result !== null);
-      
-      // Ensure we have at least one successful upload
-      if (successfulUploads.length === 0) {
-        throw new Error('Failed to upload files');
-      }
-      
-      // Get the first upload and remove the ipfs:// prefix
-      const firstUpload = successfulUploads[0];
-      if (!firstUpload) {
-        throw new Error('No successful uploads found');
-      }
-      
-      return firstUpload.replace('ipfs://', '');
+      return results[0]; // Return the first CID for now
     } catch (error) {
       console.error('Error uploading to Pinata:', error);
       throw error;
     }
   };
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(e.target.files || []);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
 
-    // Validate file size  
-    const maxSize = 10 * 1024 * 1024; // 10MB  
-    const invalidFiles = selectedFiles.filter(file => file.size > maxSize);  
-    
-    if (invalidFiles.length > 0) {  
-      setError('Some files exceed the 10MB size limit');  
-      return;  
-    }
+    const fileArray = Array.from(files);
+    setFormData(prev => ({ ...prev, files: fileArray }));
 
-    setFormData(prev => ({ ...prev, files: selectedFiles }));
-
-    // Create previews for images
-    const newPreviews = selectedFiles
-    .filter(file => file.type.startsWith('image/'))
-    .map(file => URL.createObjectURL(file));
-    
-    setPreviews(prev=> {
-      // Cleanup old previews
-      prev.forEach(url=> URL.revokeObjectURL(url));
-      return newPreviews ;
-    });
-  }, []);
+    // Create and set preview URLs
+    const newPreviews = fileArray.map(file => URL.createObjectURL(file));
+    setPreviews(prev => [...prev, ...newPreviews]);
+  };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -175,7 +148,7 @@ export default function CreatePage() {
           metadataCid,
           BigInt(unlockTimestamp)
         ],  
-        value: parseEther('0.01'),  // Montant correct selon le contrat
+        value: parseEther('0.01'),
       });
 
       setIsSuccess(true);
@@ -270,11 +243,16 @@ export default function CreatePage() {
 
             <div>
               <label className="block text-text-light mb-2 text-lg">Unlock Date</label>
-              <input
-                type="datetime-local"
+              <DatePicker
+                selected={formData.unlockDate ? new Date(formData.unlockDate) : null}
+                onChange={(date) => setFormData({ ...formData, unlockDate: date ? date.toISOString() : '' })}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="MMMM d, yyyy h:mm aa"
+                minDate={new Date()}
                 className="w-full bg-background/40 border border-primary/30 rounded-lg p-3 text-text-light focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
-                value={formData.unlockDate}
-                onChange={(e) => setFormData({ ...formData, unlockDate: e.target.value })}
+                placeholderText="Select unlock date and time"
               />
             </div>
 
@@ -299,71 +277,43 @@ export default function CreatePage() {
                   <div className="text-4xl mb-4">🌟</div>
                   {formData.files?.length ? (
                     <>
-                      <p className="text-text-light mb-2">{formData.files.length} file(s) selected</p>
-                      <p className="text-text-muted text-sm">Click or drag to add more files</p>
+                      <p className="text-lg font-medium mb-2">{formData.files.length} file(s) selected</p>
+                      <ul className="text-sm text-text-light/80">
+                        {Array.from(formData.files).map((file, index) => (
+                          <li key={index} className="mb-1">
+                            {file.name} ({formatFileSize(file.size)})
+                          </li>
+                        ))}
+                      </ul>
                     </>
                   ) : (
                     <>
-                      <p className="text-text-light mb-2">Drag and drop your files here</p>
-                      <p className="text-text-muted text-sm">or click to select files</p>
-                      <p className="text-text-muted text-xs mt-2">Supported formats: Images, Videos, Audio, PDF, Text, and Documents</p>
+                      <p className="text-lg font-medium mb-2">Drop your files here or click to browse</p>
+                      <p className="text-sm text-text-light/80">Support for images, videos, audio, and documents</p>
                     </>
                   )}
                 </label>
-
-                {/* File Preview Section */}
-                {formData.files && formData.files.length > 0 && (
-                  <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {Array.from(formData.files).map((file, index) => (
-                      <div key={index} className="relative group">
-                        {file.type.startsWith('image/') ? (
-                          <div className="relative aspect-square rounded-lg overflow-hidden border border-primary/20">
-                            <Image
-                              src={URL.createObjectURL(file)}
-                              alt={file.name}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className="aspect-square rounded-lg border border-primary/20 flex items-center justify-center bg-background/40">
-                            <span className="text-2xl">
-                              {file.type.includes('video') ? '🎥' :
-                               file.type.includes('audio') ? '🎵' :
-                               file.type.includes('pdf') ? '📄' :
-                               '📁'}
-                            </span>
-                          </div>
-                        )}
-                        <div className="mt-1 space-y-0.5">
-                          <p className="text-xs text-text-muted truncate">{file.name}</p>
-                          <p className="text-xs text-text-muted/70">{formatFileSize(file.size)}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Total size information */}
-                {formData.files && formData.files.length > 0 && (
-                  <div className="mt-4 text-sm text-text-muted">
-                    <p>Total size: {formatFileSize(Array.from(formData.files).reduce((acc, file) => acc + file.size, 0))}</p>
-                    <p className="text-xs text-text-muted/70">Maximum allowed: 10 MB per file</p>
-                  </div>
-                )}
               </div>
-              {error && (
-                <p className="text-red-500 text-sm mt-2">{error}</p>
-              )}
             </div>
+
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-500">
+                {error}
+              </div>
+            )}
 
             <button
               type="submit"
               disabled={isUploading || isConfirming}
-              className="w-full bg-magic hover:bg-magic-shine text-text-light py-4 rounded-lg font-medium transition-all transform hover:scale-105 shadow-cosmic"
+              className={`w-full py-4 px-6 rounded-lg font-semibold text-lg shadow-cosmic
+                        transition-all duration-300 transform hover:scale-105 active:scale-95
+                        ${isUploading || isConfirming
+                          ? 'bg-primary/50 cursor-not-allowed'
+                          : 'bg-primary hover:bg-primary/80'}`}
             >
-              {isUploading ? 'Uploading to IPFS...' : 
-               writeStatus === 'pending' ? 'Confirming Transaction...' : 
+              {isUploading ? 'Uploading...' :
+               isConfirming ? 'Confirming...' :
+               isSuccess ? 'Success!' :
                'Create Time Capsule'}
             </button>
           </form>

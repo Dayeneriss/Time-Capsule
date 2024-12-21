@@ -3,50 +3,94 @@
 @tailwind utilities;
 
 :root {
-      --background-dark: #1E2530;
-      --background-card: #262B35;
-      --accent-yellow: #FFC107;
-      --text-white: #FFFFFF;
-      --text-gray: #9CA3AF;
-    }
-    
-    body {
-      background-color: var(--background-dark);
-      color: var(--text-white);
-    }
+  --background-dark: #1E2530;
+  --background-card: #262B35;
+  --accent-yellow: #FFC107;
+  --text-white: #FFFFFF;
+  --text-gray: #9CA3AF;
+}
 
-    @layer components {
-        .nav-button {
-            @apply px-4 py-2 rounded-lg font-semibold shadow-lg 
-                   transition-all duration-300 transform 
-                   hover:scale-105 active:scale-95;
-        }
-    
-        .notification {
-            @apply fixed top-20 right-6 p-3 rounded-lg backdrop-blur-sm
-                   shadow-lg z-50 transition-all duration-300;
-        }
-    
-        .notification-success {
-            @apply bg-green-100/10 text-green-500;
-        }
-    
-        .notification-error {
-            @apply bg-red-100/10 text-red-500;
-        }
-    }
-    
-    @keyframes slideIn {
-        from {
-            transform: translateY(-100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
-    
-    .slide-in {
-        animation: slideIn 0.3s ease-out;
-    }
+body {
+  background-color: var(--background-dark);
+  color: var(--text-white);
+}
+
+/* Styles pour le DatePicker */
+.react-datepicker {
+  @apply bg-background border border-primary/30 rounded-lg shadow-cosmic !important;
+}
+
+.react-datepicker__header {
+  @apply bg-background border-b border-primary/30 !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name,
+.react-datepicker__day,
+.react-datepicker__time-name {
+  @apply text-text-light !important;
+}
+
+.react-datepicker__day:hover {
+  @apply bg-primary/20 !important;
+}
+
+.react-datepicker__day--selected {
+  @apply bg-primary text-white !important;
+}
+
+.react-datepicker__time-container {
+  @apply border-l border-primary/30 !important;
+}
+
+.react-datepicker__time {
+  @apply bg-background !important;
+}
+
+.react-datepicker__time-box {
+  @apply bg-background !important;
+}
+
+.react-datepicker__time-list-item {
+  @apply text-text-light hover:bg-primary/20 !important;
+}
+
+.react-datepicker__time-list-item--selected {
+  @apply bg-primary !important;
+}
+
+@layer components {
+  .nav-button {
+    @apply px-4 py-2 rounded-lg font-semibold shadow-lg 
+           transition-all duration-300 transform 
+           hover:scale-105 active:scale-95;
+  }
+
+  .notification {
+    @apply fixed top-20 right-6 p-3 rounded-lg backdrop-blur-sm
+           shadow-lg z-50 transition-all duration-300;
+  }
+
+  .notification-success {
+    @apply bg-green-100/10 text-green-500;
+  }
+
+  .notification-error {
+    @apply bg-red-100/10 text-red-500;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
