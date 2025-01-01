@@ -70,4 +70,5 @@ typings/
 package-lock.json
 yarn.lock
 
-templates/evm/core/pages/api
+templates/evm/core/pages/api.env
+*.local
