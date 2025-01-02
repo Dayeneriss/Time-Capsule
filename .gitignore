@@ -1,4 +1,13 @@
 backend/out/StdChains.sol/StdChains.json
 node_modules/
+# Environment variables
 .env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
 *.log
