@@ -17,6 +17,11 @@ const nextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  // Désactiver le pré-rendu des pages qui nécessitent des données dynamiques
+  experimental: {
+    workerThreads: false,
+    cpus: 1
   }
 }
 

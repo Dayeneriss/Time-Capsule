@@ -2,10 +2,8 @@ import { createConfig, http } from 'wagmi'
 import { polygon } from 'wagmi/chains'
 import { injected } from 'wagmi'
 
-// Vérifiez que vous utilisez bien une clé Alchemy pour le mainnet Polygon
-if (!process.env.ALCHEMY_API_KEY) {
-  throw new Error('ALCHEMY_API_KEY is not defined. Assurez-vous que la clé est configurée pour le mainnet Polygon.')
-}
+// Récupération de la clé Alchemy via une variable d'environnement
+const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
 
 // Configuration pour le mainnet Polygon
 const config = createConfig({
@@ -14,9 +12,13 @@ const config = createConfig({
   connectors: [
     injected(),
   ],
-  // Configuration du transport RPC pour Polygon mainnet via Alchemy
+  // Configuration du transport RPC pour Polygon mainnet
   transports: {
-    [polygon.id]: http(`https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`)
+    [polygon.id]: http(
+      ALCHEMY_API_KEY 
+        ? `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`
+        : 'https://polygon-rpc.com' // Fallback vers un RPC public
+    )
   }
 })
 
