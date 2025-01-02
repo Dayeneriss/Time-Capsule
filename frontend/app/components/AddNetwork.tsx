@@ -8,19 +8,19 @@ export const AddNetworkButton = () => {
         await window.ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [{
-            chainId: '0x13881', // 80001 en hexadécimal
-            chainName: 'Polygon Amoy',
+            chainId: '0x89', // 137 en hexadécimal pour le mainnet Polygon
+            chainName: 'Polygon Mainnet',
             nativeCurrency: {
               name: 'MATIC',
               symbol: 'MATIC',
               decimals: 18
             },
-            rpcUrls: ['https://rpc-amoy.polygon.technology'],
-            blockExplorerUrls: ['https://www.oklink.com/amoy']
+            rpcUrls: ['https://polygon-rpc.com', 'https://rpc-mainnet.maticvigil.com'],
+            blockExplorerUrls: ['https://polygonscan.com']
           }]
         });
       } catch (error) {
-        console.error('Error adding network:', error);
+        console.error('Error adding Polygon Mainnet:', error);
       }
     }
   };
@@ -28,9 +28,9 @@ export const AddNetworkButton = () => {
   return (
     <button
       onClick={addNetwork}
-      className="bg-[#FFC107] text-[#1E2530] px-6 py-2 rounded-md font-medium hover:bg-[#FFD54F] transition-colors"
+      className="bg-[#8247E5] text-white px-6 py-2 rounded-md font-medium hover:bg-[#6D31C9] transition-colors"
     >
-      Add Polygon Amoy Network
+      Add Polygon Mainnet
     </button>
   );
 };

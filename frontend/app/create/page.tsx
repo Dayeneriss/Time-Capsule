@@ -48,12 +48,20 @@ export default function CreatePage() {
 
   const uploadToPinata = async (files: File[]): Promise<string> => {
     try {
-      const uploadPromises = files.map(file => uploadToIPFS(file));
-      const results = await Promise.all(uploadPromises);
-      if (!results[0]) {
-        throw new Error('No CID returned from IPFS upload');
+      if (!files || files.length === 0) {
+        throw new Error('No files provided');
       }
-      return results[0]; // Return the first CID for now
+
+      const file = files[0];
+      console.log('Uploading file to IPFS:', file.name);
+      
+      const cid = await uploadToIPFS(file);
+      if (!cid) {
+        throw new Error('Failed to upload to IPFS');
+      }
+      
+      console.log('File uploaded successfully:', cid);
+      return cid;
     } catch (error) {
       console.error('Error uploading to Pinata:', error);
       throw error;
@@ -155,10 +163,20 @@ export default function CreatePage() {
       });
 
       setIsSuccess(true);
-      // Attendre un peu pour montrer le message de succès
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      // Rediriger vers la page des capsules
-      router.push('/capsules');
+      console.log('Transaction hash:', hash);
+
+      // Attendre que la transaction soit confirmée
+      try {
+        // Attendre 2 secondes pour être sûr que la transaction est propagée
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Rediriger vers la page d'accueil
+        router.push('/');
+      } catch (error) {
+        console.error('Error waiting for transaction confirmation:', error);
+        // En cas d'erreur, rediriger quand même vers la page d'accueil
+        router.push('/');
+      }
     } catch (err) {  
       setError(err instanceof Error ? err.message : 'Failed to create time capsule');  
       console.error('Error creating time capsule:', err);  

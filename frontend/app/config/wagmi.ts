@@ -1,18 +1,22 @@
 import { createConfig, http } from 'wagmi'
-import { polygonMumbai } from 'wagmi/chains'
-import { injected } from 'wagmi/connectors'
+import { polygon } from 'wagmi/chains'
+import { injected } from 'wagmi'
 
-if (!process.env.NEXT_PUBLIC_ALCHEMY_API_KEY) {
-  throw new Error('NEXT_PUBLIC_ALCHEMY_API_KEY is not defined')
+// Vérifiez que vous utilisez bien une clé Alchemy pour le mainnet Polygon
+if (!process.env.ALCHEMY_API_KEY) {
+  throw new Error('ALCHEMY_API_KEY is not defined. Assurez-vous que la clé est configurée pour le mainnet Polygon.')
 }
 
+// Configuration pour le mainnet Polygon
 const config = createConfig({
-  chains: [polygonMumbai],
+  // Utilisation du mainnet Polygon
+  chains: [polygon],
   connectors: [
     injected(),
   ],
+  // Configuration du transport RPC pour Polygon mainnet via Alchemy
   transports: {
-    [polygonMumbai.id]: http(`https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`)
+    [polygon.id]: http(`https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`)
   }
 })
 
