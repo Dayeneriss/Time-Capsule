@@ -1,0 +1,4 @@
+backend/out/StdChains.sol/StdChains.json
+node_modules/
+.env
+*.log
