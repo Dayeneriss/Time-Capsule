@@ -2,6 +2,9 @@ import { createConfig, http } from 'wagmi'
 import { polygon } from 'wagmi/chains'
 import { injected } from 'wagmi'
 
+// Récupération de la clé Alchemy via une variable d'environnement
+const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
+
 // Configuration pour le mainnet Polygon
 const config = createConfig({
   chains: [polygon],
@@ -9,7 +12,11 @@ const config = createConfig({
     injected(),
   ],
   transports: {
-    [polygon.id]: http('https://polygon-rpc.com') // Utiliser le RPC public par défaut
+    [polygon.id]: http(
+      ALCHEMY_API_KEY 
+        ? `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`
+        : 'https://polygon-rpc.com' // Fallback vers un RPC public si la clé n'est pas disponible
+    )
   }
 })
 
